@@ -13,7 +13,7 @@ Kaynak kod, sırasıyla **parsing, AST oluşturma, semantik analiz, kod üretimi
 | AST Görselleştirme | AST hiyerarşik olarak görselleştirilir; düğümlerin türleri, değerleri ve operatörleri gösterilir. |
 | Semantik Analiz | Değişkenler ve fonksiyonlar kontrol edilir, tip uyumsuzlukları ve hatalı kontrol akışları tespit edilir. |
 | Stack Machine | AST'den üretilen bytecode, stack tabanlı sanal makinede çalıştırılır. |
-| Opsiyonel Kod Üretimi | Bytecode üretimi ve yürütme desteği sağlanır. |
+| Kod Üretimi | Bytecode üretimi ve yürütme desteği sağlanır. |
 
 ---
 
