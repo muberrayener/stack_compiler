@@ -117,12 +117,6 @@ ast = parser.parse('x = 10 + 5;')
 print(ast)
 ```
 
-**Çıktı:**
-
-```
-<Program>
-```
-
 ### AST Görselleştirme
 
 AST, hiyerarşik şekilde görselleştirilir. Düğüm türü, değer ve operatörler ekrana yazdırılır.
@@ -240,7 +234,6 @@ except ImportError:
 
 - Söz dizimi hataları parsing sırasında raporlanır.
 - Tanımsız değişken veya tip uyumsuzluğu semantik analizde tespit edilir.
-- Kod üretimi modülü mevcut değilse bytecode üretimi ve yürütme aşaması atlanır.
 
 ---
 
