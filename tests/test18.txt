@@ -1,0 +1,12 @@
+sayac = 0;
+limit = 5;
+
+while (sayac < limit) {
+    
+    deger = listem[sayac]; 
+    print(deger);
+    
+    sayac = sayac + 1;
+}
+
+yeni_dizi = [1, 2, 3];

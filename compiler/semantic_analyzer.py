@@ -137,45 +137,72 @@ class SemanticAnalyzer:
         rt = self.analyze(node.right)
         op = node.op
 
-        # bilinmeyen tipleri diğerine göre belirle
+        # Unknown olan tiplere diğer tarafa uyum sağla
         if lt == "unknown" and rt != "unknown":
             lt = rt
             if isinstance(node.left, Identifier):
-                self.symbols.resolve(node.left.name, node.left.lineno).type = lt
+                sym = self.symbols.resolve(node.left.name, node.left.lineno)
+                sym.type = lt
         if rt == "unknown" and lt != "unknown":
             rt = lt
             if isinstance(node.right, Identifier):
-                self.symbols.resolve(node.right.name, node.right.lineno).type = rt
+                sym = self.symbols.resolve(node.right.name, node.right.lineno)
+                sym.type = rt
 
-        # Arithmetic
-        if op in ["+", "-", "*", "/", "%"]:
-            if op == "%" and (lt != "int" or rt != "int"):
-                raise SemanticError(f"Modulo '%' requires int operands, got {lt} and {rt} at line {node.lineno}")
-            if lt in ("int", "float") and rt in ("int", "float"):
-                return "float" if "float" in (lt, rt) else "int"
-            if op == "+" and ("string" in (lt, rt)):
-                return "string"
-            raise SemanticError(f"Incompatible types '{lt}' and '{rt}' for '{op}' at line {node.lineno}")
+        # Eğer her ikisi de unknown ise, + / - / * / / / % için int varsay
+        if lt == "unknown" and rt == "unknown" and op in ["+", "-", "*", "/", "%"]:
+            lt = rt = "int"
+            if isinstance(node.left, Identifier):
+                sym = self.symbols.resolve(node.left.name, node.left.lineno)
+                sym.type = "int"
+            if isinstance(node.right, Identifier):
+                sym = self.symbols.resolve(node.right.name, node.right.lineno)
+                sym.type = "int"
 
-        # Equality
+        # ---------- String concatenation ----------
+        if op == "+" and ("string" in (lt, rt)):
+            return "string"
+
+        # ---------- Modulus ----------
+        if op == "%" and (lt != "int" or rt != "int"):
+            raise SemanticError(
+                f"Modulo '%' requires integer operands, got {lt} and {rt} at line {node.lineno}"
+            )
+
+        # ---------- Arithmetic ----------
+        if lt in ("int", "float") and rt in ("int", "float"):
+            return "float" if "float" in (lt, rt) else "int"
+
+        # ---------- Equality ----------
         if op in ["==", "!="]:
-            if lt == "null" or rt == "null": return "bool"
+            if lt == "null" or rt == "null":
+                return "bool"
             if lt != rt:
-                raise SemanticError(f"Cannot compare '{lt}' with '{rt}' using '{op}' at line {node.lineno}")
+                raise SemanticError(
+                    f"Cannot compare '{lt}' with '{rt}' using '{op}' at line {node.lineno}"
+                )
             return "bool"
 
-        # Relational
+        # ---------- Relational ----------
         if op in ["<", "<=", ">", ">="]:
-            if lt in ("int", "float") and rt in ("int", "float"): return "bool"
-            if lt == rt == "string": return "bool"
-            raise SemanticError(f"Operator '{op}' not supported between '{lt}' and '{rt}' at line {node.lineno}")
+            if lt in ("int", "float") and rt in ("int", "float"):
+                return "bool"
+            if lt == rt == "string":
+                return "bool"
+            raise SemanticError(
+                f"Operator '{op}' not supported between '{lt}' and '{rt}' at line {node.lineno}"
+            )
 
-        # Logical
+        # ---------- Logical ----------
         if op in ["and", "or"]:
-            if lt == "bool" and rt == "bool": return "bool"
-            raise SemanticError(f"Logical operator '{op}' requires bool operands, got {lt} and {rt} at line {node.lineno}")
+            if lt == "bool" and rt == "bool":
+                return "bool"
+            raise SemanticError(
+                f"Logical operator '{op}' requires bool operands, got {lt} and {rt} at line {node.lineno}"
+            )
 
         return lt
+
 
     # Unary operators
     def visit_UnaryOp(self, node):
@@ -240,7 +267,8 @@ class SemanticAnalyzer:
 
     # Loop control (break / continue)
     def visit_ControlFlow(self, node):
+        keyword_upper = node.keyword.upper()   # Lexer büyük harf kullanıyorsa
         if self.loop_depth == 0:
-            raise SemanticError(f"'{node.keyword}' used outside loop at line {node.lineno}")
-        if node.keyword not in ("break", "continue"):
-            raise SemanticError(f"Unknown control flow '{node.keyword}' at line {node.lineno}")
+            raise SemanticError(f"'{keyword_upper}' used outside loop at line {node.lineno}")
+        if keyword_upper not in ("BREAK", "CONTINUE"):
+            raise SemanticError(f"Unknown control flow '{keyword_upper}' at line {node.lineno}")

@@ -1,6 +1,2 @@
-func emptyFunction()) {
-    }
-    
-func noReturn() {
-        x = 42;
-    }
+x = 10 + 5;
+y = x * 2;

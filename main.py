@@ -40,6 +40,7 @@ def run_pipeline(code, parser):
     
     except SemanticError as e:
         print("❌ Semantic error:", e)
+        return
     
     # -------- CODE GENERATION & EXECUTION --------
     print("\n⚙ Code Generation (Stack Machine)")
@@ -97,7 +98,5 @@ if __name__ == "__main__":
     parser = Parser()
 
     # Test dosyaları sırayla çalıştır
-    test_file("tests/test1.txt", parser)
-    test_file("tests/test2.txt", parser)
-    test_file("tests/test3.txt", parser)
-    test_file("tests/test4.txt", parser)
+    for i in range(1, 19):
+        test_file(f"tests/test{i}.txt", parser)

@@ -1,0 +1,833 @@
+============================================================
+RUNNING: tests/test1.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+func checkGrade(score) {
+        if (score >= 90) {
+            return "A";
+        } else {
+            if (score >= 80) {
+                return "B";
+            } else {
+                if (score >= 70) {
+                    return "C";
+                } else {
+                    return "F";
+                }
+            }
+        }
+    }
+
+grade = checkGrade(95);
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <FunctionDef>
+|   |   Name: checkGrade
+|   |   Body: <Block>
+|   |   |   Stmt: <IfStatement>
+|   |   |   |   Condition: <BinOp>
+|   |   |   |   |   Op: >=
+|   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   Name: score
+|   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   Value: 90
+|   |   |   |   Then: <Block>
+|   |   |   |   |   Stmt: <ReturnStatement>
+|   |   |   |   |   |   Value: <Literal>
+|   |   |   |   Else: <Block>
+|   |   |   |   |   Stmt: <IfStatement>
+|   |   |   |   |   |   Condition: <BinOp>
+|   |   |   |   |   |   |   Op: >=
+|   |   |   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   |   |   Name: score
+|   |   |   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   |   |   Value: 80
+|   |   |   |   |   |   Then: <Block>
+|   |   |   |   |   |   |   Stmt: <ReturnStatement>
+|   |   |   |   |   |   |   |   Value: <Literal>
+|   |   |   |   |   |   Else: <Block>
+|   |   |   |   |   |   |   Stmt: <IfStatement>
+|   |   |   |   |   |   |   |   Condition: <BinOp>
+|   |   |   |   |   |   |   |   |   Op: >=
+|   |   |   |   |   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   |   |   |   |   Name: score
+|   |   |   |   |   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   |   |   |   |   Value: 70
+|   |   |   |   |   |   |   |   Then: <Block>
+|   |   |   |   |   |   |   |   |   Stmt: <ReturnStatement>
+|   |   |   |   |   |   |   |   |   |   Value: <Literal>
+|   |   |   |   |   |   |   |   Else: <Block>
+|   |   |   |   |   |   |   |   |   Stmt: <ReturnStatement>
+|   |   |   |   |   |   |   |   |   |   Value: <Literal>
+|   Stmt: <Assignment>
+|   |   Value: <FunCall>
+|   |   Target: <Identifier>
+|   |   |   Name: grade
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 95
+CALL FUNC_checkGrade 1
+STORE grade
+HALT
+FUNC_checkGrade:
+STORE score
+LOAD score
+PUSH 90
+GE
+JZ ELSE1
+PUSH "A"
+RET
+JMP ENDIF2
+ELSE1:
+LOAD score
+PUSH 80
+GE
+JZ ELSE3
+PUSH "B"
+RET
+JMP ENDIF4
+ELSE3:
+LOAD score
+PUSH 70
+GE
+JZ ELSE5
+PUSH "C"
+RET
+JMP ENDIF6
+ELSE5:
+PUSH "F"
+RET
+ENDIF6:
+ENDIF4:
+ENDIF2:
+PUSH 0
+RET
+
+=== EXECUTION RESULT ===
+score = 95
+grade = A
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test2.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+x = 10;
+y = 20;
+z = 30;
+
+if ((x > 5 && y < 25) || z == 30) {
+    result = x + y * z;
+}
+
+flag = !(x == y) && (z >= 30);
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: x
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: y
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: z
+|   Stmt: <IfStatement>
+|   |   Condition: <BinOp>
+|   |   |   Op: ||
+|   |   |   Left: <BinOp>
+|   |   |   |   Op: &&
+|   |   |   |   Left: <BinOp>
+|   |   |   |   |   Op: >
+|   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   Name: x
+|   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   Value: 5
+|   |   |   |   Right: <BinOp>
+|   |   |   |   |   Op: <
+|   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   Name: y
+|   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   Value: 25
+|   |   |   Right: <BinOp>
+|   |   |   |   Op: ==
+|   |   |   |   Left: <Identifier>
+|   |   |   |   |   Name: z
+|   |   |   |   Right: <Literal>
+|   |   |   |   |   Value: 30
+|   |   Then: <Block>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <BinOp op=+>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: result
+|   Stmt: <Assignment>
+|   |   Value: <BinOp op=&&>
+|   |   Target: <Identifier>
+|   |   |   Name: flag
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 10
+STORE x
+PUSH 20
+STORE y
+PUSH 30
+STORE z
+LOAD x
+PUSH 5
+GT
+LOAD y
+PUSH 25
+LT
+AND
+LOAD z
+PUSH 30
+EQ
+OR
+JZ ELSE1
+LOAD x
+LOAD y
+LOAD z
+MUL
+ADD
+STORE result
+JMP ENDIF2
+ELSE1:
+ENDIF2:
+LOAD x
+LOAD y
+EQ
+LOAD z
+PUSH 30
+GE
+AND
+STORE flag
+HALT
+
+=== EXECUTION RESULT ===
+x = 10
+y = 20
+z = 30
+result = 610
+flag = False
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test3.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+x = 10 + 5;
+y = x * 2;
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <Assignment>
+|   |   Value: <BinOp op=+>
+|   |   Target: <Identifier>
+|   |   |   Name: x
+|   Stmt: <Assignment>
+|   |   Value: <BinOp op=*>
+|   |   Target: <Identifier>
+|   |   |   Name: y
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 10
+PUSH 5
+ADD
+STORE x
+LOAD x
+PUSH 2
+MUL
+STORE y
+HALT
+
+=== EXECUTION RESULT ===
+x = 15
+y = 30
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test4.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+func add(a, b) {
+    return a + b;
+}
+
+z = add(3, 4);
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <FunctionDef>
+|   |   Name: add
+|   |   Body: <Block>
+|   |   |   Stmt: <ReturnStatement>
+|   |   |   |   Value: <BinOp op=+>
+|   Stmt: <Assignment>
+|   |   Value: <FunCall>
+|   |   Target: <Identifier>
+|   |   |   Name: z
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 3
+PUSH 4
+CALL FUNC_add 2
+STORE z
+HALT
+FUNC_add:
+STORE b
+STORE a
+LOAD a
+LOAD b
+ADD
+RET
+PUSH 0
+RET
+
+=== EXECUTION RESULT ===
+b = 4
+a = 3
+z = 7
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test5.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+x = 10;
+if (x > 5) {
+    y = 1;
+} else {
+    y = 0;
+}
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: x
+|   Stmt: <IfStatement>
+|   |   Condition: <BinOp>
+|   |   |   Op: >
+|   |   |   Left: <Identifier>
+|   |   |   |   Name: x
+|   |   |   Right: <Literal>
+|   |   |   |   Value: 5
+|   |   Then: <Block>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <Literal>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: y
+|   |   Else: <Block>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <Literal>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: y
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 10
+STORE x
+LOAD x
+PUSH 5
+GT
+JZ ELSE1
+PUSH 1
+STORE y
+JMP ENDIF2
+ELSE1:
+PUSH 0
+STORE y
+ENDIF2:
+HALT
+
+=== EXECUTION RESULT ===
+x = 10
+y = 1
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test6.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+sum = 0;
+for (i = 0; i < 5; i = i + 1) {
+    sum = sum + i;
+}
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: sum
+|   Stmt: <ForStatement>
+|   |   Condition: <BinOp>
+|   |   |   Op: <
+|   |   |   Left: <Identifier>
+|   |   |   |   Name: i
+|   |   |   Right: <Literal>
+|   |   |   |   Value: 5
+|   |   Body: <Block>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <BinOp op=+>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: sum
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 0
+STORE sum
+PUSH 0
+STORE i
+FOR_START1:
+LOAD i
+PUSH 5
+LT
+JMP_IF_FALSE FOR_END2
+LOAD sum
+LOAD i
+ADD
+STORE sum
+FOR_UPDATE3:
+LOAD i
+PUSH 1
+ADD
+STORE i
+JMP FOR_START1
+FOR_END2:
+HALT
+
+=== EXECUTION RESULT ===
+sum = 10
+i = 5
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test7.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+func checkLoop() {
+    i = 0;
+    while (i < 10) {
+        if (i == 5) {
+            break;
+        }
+        i = i + 1;
+        continue;
+    }
+}
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <FunctionDef>
+|   |   Name: checkLoop
+|   |   Body: <Block>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <Literal>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: i
+|   |   |   Stmt: <WhileStatement>
+|   |   |   |   Condition: <BinOp>
+|   |   |   |   |   Op: <
+|   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   Name: i
+|   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   Value: 10
+|   |   |   |   Body: <Block>
+|   |   |   |   |   Stmt: <IfStatement>
+|   |   |   |   |   |   Condition: <BinOp>
+|   |   |   |   |   |   |   Op: ==
+|   |   |   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   |   |   Name: i
+|   |   |   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   |   |   Value: 5
+|   |   |   |   |   |   Then: <Block>
+|   |   |   |   |   |   |   Stmt: <ControlFlow>
+|   |   |   |   |   Stmt: <Assignment>
+|   |   |   |   |   |   Value: <BinOp op=+>
+|   |   |   |   |   |   Target: <Identifier>
+|   |   |   |   |   |   |   Name: i
+|   |   |   |   |   Stmt: <ControlFlow>
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+HALT
+FUNC_checkLoop:
+PUSH 0
+STORE i
+WHILE_START1:
+LOAD i
+PUSH 10
+LT
+JMP_IF_FALSE WHILE_END2
+LOAD i
+PUSH 5
+EQ
+JZ ELSE3
+JMP WHILE_START1
+JMP ENDIF4
+ELSE3:
+ENDIF4:
+LOAD i
+PUSH 1
+ADD
+STORE i
+JMP WHILE_START1
+JMP WHILE_START1
+WHILE_END2:
+PUSH 0
+RET
+
+=== EXECUTION RESULT ===
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test8.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+i = 0;
+sum = 0;
+while (i < 5) {
+    sum = sum + i;
+    i = i + 1;
+}
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: i
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: sum
+|   Stmt: <WhileStatement>
+|   |   Condition: <BinOp>
+|   |   |   Op: <
+|   |   |   Left: <Identifier>
+|   |   |   |   Name: i
+|   |   |   Right: <Literal>
+|   |   |   |   Value: 5
+|   |   Body: <Block>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <BinOp op=+>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: sum
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <BinOp op=+>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: i
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 0
+STORE i
+PUSH 0
+STORE sum
+WHILE_START1:
+LOAD i
+PUSH 5
+LT
+JMP_IF_FALSE WHILE_END2
+LOAD sum
+LOAD i
+ADD
+STORE sum
+LOAD i
+PUSH 1
+ADD
+STORE i
+JMP WHILE_START1
+WHILE_END2:
+HALT
+
+=== EXECUTION RESULT ===
+i = 5
+sum = 10
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test9.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+sum = 0;
+for (i = 1; i <= 10; i = i + 1) {
+    if (i % 2 == 0) {
+        continue;
+    }
+    if (i > 7) {
+        break;
+    }
+    sum = sum + i;
+}
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: sum
+|   Stmt: <ForStatement>
+|   |   Condition: <BinOp>
+|   |   |   Op: <=
+|   |   |   Left: <Identifier>
+|   |   |   |   Name: i
+|   |   |   Right: <Literal>
+|   |   |   |   Value: 10
+|   |   Body: <Block>
+|   |   |   Stmt: <IfStatement>
+|   |   |   |   Condition: <BinOp>
+|   |   |   |   |   Op: ==
+|   |   |   |   |   Left: <BinOp>
+|   |   |   |   |   |   Op: %
+|   |   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   |   Name: i
+|   |   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   |   Value: 2
+|   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   Value: 0
+|   |   |   |   Then: <Block>
+|   |   |   |   |   Stmt: <ControlFlow>
+|   |   |   Stmt: <IfStatement>
+|   |   |   |   Condition: <BinOp>
+|   |   |   |   |   Op: >
+|   |   |   |   |   Left: <Identifier>
+|   |   |   |   |   |   Name: i
+|   |   |   |   |   Right: <Literal>
+|   |   |   |   |   |   Value: 7
+|   |   |   |   Then: <Block>
+|   |   |   |   |   Stmt: <ControlFlow>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <BinOp op=+>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: sum
+
+🧠 Semantic Analysis
+✅ No semantic errors. Program is semantically correct.
+
+⚙ Code Generation (Stack Machine)
+PUSH 0
+STORE sum
+PUSH 1
+STORE i
+FOR_START1:
+LOAD i
+PUSH 10
+LE
+JMP_IF_FALSE FOR_END2
+LOAD i
+PUSH 2
+MOD
+PUSH 0
+EQ
+JZ ELSE4
+JMP FOR_UPDATE3
+JMP ENDIF5
+ELSE4:
+ENDIF5:
+LOAD i
+PUSH 7
+GT
+JZ ELSE6
+JMP FOR_UPDATE3
+JMP ENDIF7
+ELSE6:
+ENDIF7:
+LOAD sum
+LOAD i
+ADD
+STORE sum
+FOR_UPDATE3:
+LOAD i
+PUSH 1
+ADD
+STORE i
+JMP FOR_START1
+FOR_END2:
+HALT
+
+=== EXECUTION RESULT ===
+sum = 16
+i = 11
+------------------------------------------------------------
+============================================================
+RUNNING: tests/test10.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+a = "hello";
+b = 10;
+
+c = a - b;
+
+if (a > b) {
+    print = a;
+}
+------------------------------------------------------------
+
+🌳 AST Visualization
+<Program>
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: a
+|   Stmt: <Assignment>
+|   |   Value: <Literal>
+|   |   Target: <Identifier>
+|   |   |   Name: b
+|   Stmt: <Assignment>
+|   |   Value: <BinOp op=->
+|   |   Target: <Identifier>
+|   |   |   Name: c
+|   Stmt: <IfStatement>
+|   |   Condition: <BinOp>
+|   |   |   Op: >
+|   |   |   Left: <Identifier>
+|   |   |   |   Name: a
+|   |   |   Right: <Identifier>
+|   |   |   |   Name: b
+|   |   Then: <Block>
+|   |   |   Stmt: <Assignment>
+|   |   |   |   Value: <Identifier>
+|   |   |   |   Target: <Identifier>
+|   |   |   |   |   Name: print
+
+🧠 Semantic Analysis
+❌ Semantic error: Operator '>' not supported between 'string' and 'int' at line 66
+============================================================
+RUNNING: tests/test11.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+func double {
+    return x * 2
+}
+
+y = double(5);
+------------------------------------------------------------
+Syntax error at token LBRACE ('{') on line 68
+Syntax error at token RBRACE ('}') on line 70
+❌ Parsing FAILED
+============================================================
+RUNNING: tests/test12.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+func add(a, b) {
+    return a + b;
+}
+
+result = add(x, 5);
+------------------------------------------------------------
+❌ Parsing FAILED
+============================================================
+RUNNING: tests/test13.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+func noReturn( {
+    x = 42;
+}
+------------------------------------------------------------
+Syntax error at token LBRACE ('{') on line 76
+Syntax error at token RBRACE ('}') on line 78
+❌ Parsing FAILED
+============================================================
+RUNNING: tests/test14.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+x = y + 5;
+------------------------------------------------------------
+❌ Parsing FAILED
+============================================================
+RUNNING: tests/test15.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+x = "hello";
+y = x + 5;
+------------------------------------------------------------
+❌ Parsing FAILED
+============================================================
+RUNNING: tests/test16.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+x = 10
+y = 20;
+------------------------------------------------------------
+Syntax error at token IDENTIFIER ('y') on line 80
+❌ Parsing FAILED
+============================================================
+RUNNING: tests/test17.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+func noReturn() {
+        x = 42;
+    }
+
+func emptyFunction()) {
+    }
+------------------------------------------------------------
+Syntax error at token RPAREN (')') on line 84
+❌ Parsing FAILED
+============================================================
+RUNNING: tests/test18.txt
+============================================================
+------------------------------------------------------------
+SOURCE CODE:
+sayac = 0;
+limit = 5;
+
+while (sayac < limit) {
+
+    deger = listem[sayac];
+    print(deger);
+
+    sayac = sayac + 1;
+}
+
+yeni_dizi = [1, 2, 3];
+------------------------------------------------------------
+Syntax error at token LBRACKET ('[') on line 90
+Syntax error at token RBRACE ('}') on line 94
+❌ Parsing FAILED

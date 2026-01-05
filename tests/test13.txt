@@ -1,0 +1,3 @@
+func noReturn( {
+    x = 42;
+}

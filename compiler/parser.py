@@ -101,8 +101,14 @@ class Parser:
         else:
             p[0] = None
     
+    def p_assignment_expression(self, p):
+        '''assignment : IDENTIFIER EQUALS expression'''
+        target_node = Identifier(p[1], p.lineno(1))
+        p[0] = Assignment(target_node, p[3], p.lineno(2))
+    
     def p_expression_or_empty(self, p):
         '''expression_or_empty : expression
+                               | assignment
                                | empty'''
         p[0] = p[1]
     

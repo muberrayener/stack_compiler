@@ -73,8 +73,14 @@ class StackMachine:
             # Aritmetik / Karşılaştırma
             elif op in ("ADD","SUB","MUL","DIV","MOD","GE","GT","LE","LT","EQ","NE","AND","OR"):
                 b, a = self.stack.pop(), self.stack.pop()
-                if op == "ADD": self.stack.append(a + b)
-                elif op == "SUB": self.stack.append(a - b)
+                if op == "ADD":
+                    if not (isinstance(a, (int, float)) and isinstance(b, (int, float))):
+                        raise RuntimeError(f"Cannot add {type(a).__name__} and {type(b).__name__}")
+                    self.stack.append(a + b)
+                elif op == "SUB":
+                    if not (isinstance(a, (int, float)) and isinstance(b, (int, float))):
+                        raise RuntimeError(f"Cannot subtract {type(a).__name__} and {type(b).__name__}")
+                    self.stack.append(a - b)
                 elif op == "MUL": self.stack.append(a * b)
                 elif op == "DIV": self.stack.append(a / b)
                 elif op == "MOD": self.stack.append(a % b)
@@ -97,6 +103,11 @@ class StackMachine:
             elif op == "JMP":
                 label = parts[1]
                 self.ip = self.labels[label]
+            
+            elif op == "JMP_IF_FALSE":
+                cond = self.stack.pop()
+                if not cond:
+                    self.ip = self.labels[parts[1]]
 
             # Fonksiyon çağırma
             elif op == "CALL":

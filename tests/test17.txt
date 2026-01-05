@@ -1,0 +1,6 @@
+func noReturn() {
+        x = 42;
+    }
+    
+func emptyFunction()) {
+    }
